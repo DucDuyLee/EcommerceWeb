@@ -1,0 +1,57 @@
+{% extends "app/base.html" %}
+{% load static %}
+{% block main-content %}
+<head>
+    <link rel="shortcut icon" href="#">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/blogDetail.css' %}" />
+    <title>Blog Detail - PDC2T E-Commerce Website</title>
+</head>
+<section id="blog">
+    <div class="blog-container">
+        <div class="blog-img">
+            {% if blog.image_file %}
+            <img src="{{ blog.image_file.url }}" alt="Blog image">
+            {% elif blog.image_url %}
+            <img src="{{ blog.image_url }}" alt="Blog image">
+            {% else %}
+            <img src="{% static 'images/default_blog_image.png' %}" alt="Default Blog image">
+            {% endif %}
+        </div>
+        <div class="blog-box">
+            <div itemscope="" itemtype="https://schema.org/NewsArticle">
+                <div class="blog-detail-item">
+                    <h1 itemprop="headline" id="toc-title">{{ blog.blogTitle }}</h1>
+                </div>
+                <meta itemprop="image" content="{{ blog.image_url }}">
+                <meta itemprop="description" content="{{ blog.blogContent }}">
+                <meta itemprop="url" content="{{ request.build_absolute_uri }}">
+                <meta itemprop="dateModified" content="{{ blog.blogDate|date:'Y-m-d' }}">
+                <div class="news-date">
+                    <span itemprop="datePublished" content="{{ blog.blogDate|date:'Y-m-d' }}"> {{ blog.blogDate|date:'d/m/Y' }} </span>
+                </div>
+            </div>
+            <div class="page-body">
+                <div class="news-body">
+                    {{ blog.blogContent|safe }}
+                </div>
+                <div class="blog-details-section">
+                    {% for detail in blog_details %}
+                    <div class="blog-detail-item">
+                        <h2>{{ detail.blogDelTitle }}</h2>
+                        {% if detail.image_file %}
+                        <img src="{{ detail.image_file.url }}" alt="Detail image">
+                        {% elif detail.image_url %}
+                        <img src="{{ detail.image_url }}" alt="Detail image">
+                        {% endif %}
+                        <p>{{ detail.description|safe }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock main-content %}

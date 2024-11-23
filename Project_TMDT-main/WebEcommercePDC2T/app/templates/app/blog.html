@@ -1,0 +1,62 @@
+{% extends "app/base.html" %}
+{% load static %}
+{% block main-content %}
+<head>
+    <link rel="shortcut icon" href="#">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/blog.css' %}" />
+    <title>Blog - PDC2T E-Commerce Website</title>
+</head>
+<section id="blog">
+  <div class="blog-heading">
+    <h3>Blog</h3>
+  </div>
+
+  <div class="blog-container">
+    {% for blog in page_obj %}
+    <div class="blog-box">
+      <!--img-->
+      <div class="blog-img">
+        {% if blog.image_file %}
+        <img src="{{ blog.image_file.url }}" alt="Blog" />
+        {% elif blog.image_url %}
+        <img src="{{ blog.image_url }}" alt="Blog" />
+        {% else %}
+        <img src="{% static 'images/default_blog_image.png' %}" alt="Blog" />
+        {% endif %}
+      </div>
+      <!--text-->
+      <div class="blog-text">
+        <span>{{ blog.blogDate|date:"d/m/Y" }}</span>
+        <a href="{% url 'blogDetail' blogTitle=blog.blogTitle %}" class="blog-title">{{ blog.blogTitle }}</a>
+        <p class="blog-content">{{ blog.blogContent }}</p>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+<!-- Pagination -->
+<div class="pagination">
+  {% if page_obj.has_previous %}
+      
+      <a href="?page={{ page_obj.previous_page_number }}"></a>
+  {% endif %}
+  <a><<<</a>
+  <!-- Thêm nút số trang 1 và 2 -->
+  {% for num in page_obj.paginator.page_range %}
+    {% if num <= 2 %}
+      {% if num == page_obj.number %}
+      
+        <span class="current-page big-number">{{ num }}</span>
+      {% else %}
+        <a href="?page={{ num }}" class="big-number">{{ num }}</a>
+        
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+  <a>>>></a>
+</div>
+
+</section>
+{% endblock main-content %}

@@ -1,0 +1,110 @@
+{% extends "app/base.html" %}
+{% load static %}
+{% block main-content %}
+<head>
+  <!-- For this page -->
+  <link rel="stylesheet" href="{% static "css/checkout.css" %}" />
+  <link rel="stylesheet" href="{% static "font-awesome.css" %}" />
+  <link rel="stylesheet" href="{% static "font-awesome.min.css" %}" />
+  <title>Checkout - PDC2T E-Commerce Website</title>
+</head>
+<!--===============Checkout=============-->
+<section class="section">
+  <div class="container">
+    <div class="checkout_container">
+      <div class="checkout">
+        <div class="checkout_items">
+          <div class="checkout_header">Checkout</div>
+          <div class="checkout_item" onclick="toggleForm('contact_form')">
+            <div>Contact Information</div>
+            <a id="toggle_contact_form"> ▼ </a>
+          </div>
+          <div class="form_container" id="contact_form">
+            <form id="checkout_form" action="{% url 'checkout' %}" method="post">
+              {% csrf_token %}
+              <div class="form_double_input">
+                <input type="text" name="first_name" placeholder="First Name" required />
+                <input type="text" name="last_name" placeholder="Last Name" required />
+              </div>
+              <input class="form_input" type="email" name="email" placeholder="Email" required />
+          </div>
+          <div class="checkout_item" onclick="toggleForm('address_form')">
+            <div>Shipping Address</div>
+            <a id="toggle_address_form"> ▼ </a>
+          </div>
+          <div class="form_container" id="address_form">
+              <div class="form_double_input">
+                <input type="text" name="street" placeholder="Street" required />
+                <input type="tel" name="phone_number" placeholder="Phone Number" required />
+              </div>
+              <input class="form_input" type="text" name="district" placeholder="District" required />
+              <input class="form_input" type="text" name="province" placeholder="Province" required />
+          </div>
+          <div class="checkout_item" onclick="toggleForm('payment_form')">
+            <div>Payment Method</div>
+            <a id="toggle_payment_form"> ▼ </a>
+          </div>
+          <div class="form_container" id="payment_form">
+              {% for payment_method in payment_methods %}
+              <div class="payment_input_horizontal">
+                <input type="radio" name="payment_method" value="{{ payment_method.payMethod_id }}" required />
+                <img src="media/{{ payment_method.payImage }}" alt="image" class="payment_card" />
+                <div class="payment_text">{{ payment_method.payName }}</div>
+              </div>
+              <div class="lighter_breakline"></div>
+              {% endfor %}
+          </div>
+            <button type="submit" class="placeorder_button">Place Order</button>
+            </form>
+        </div>
+      </div>
+      <div class="order_sumary">
+        <div class="oder_sumary_header">Order Summary</div>
+        {% for item, image_url in cart_items_with_images %}
+        <div class="oder_sumary_items">
+          {% if image_url %}
+          <img class="oder_sumary_item_img" src="{{ image_url }}" alt="{{ item.pro.proName }}" />
+          {% else %}
+          <img class="oder_sumary_item_img" src="{% static 'images/default_product.png' %}" alt="{{ item.pro.proName }}" />
+          {% endif %}
+          <div>
+            <div class="oder_sumary_item_main_infor">
+              <div>{{ item.pro.proName }}</div>
+              <div>${{ item.pro.proPrice }}</div>
+            </div>
+            <div class="oder_sumary_item_sub_infor">Quantity: {{ item.quantity }}</div>
+          </div>
+        </div>
+        {% endfor %}
+        <div class="breakline"></div>
+        <div class="sub_payment_details">
+          <div>Subtotal</div>
+          <div>${{ subtotal }}</div>
+        </div>
+        <div class="sub_payment_details">
+          <div>Ship</div>
+          <div>${{ shipping }}</div>
+        </div>
+        <div class="sub_payment_details">
+          <div>Tax</div>
+          <div>${{ tax }}</div>
+        </div>
+        <div class="breakline"></div>
+        <div class="main_payment_details">
+          <div>Total</div>
+          <div>${{ total }}</div>
+        </div>
+        <div class="policy_warning">
+          <div>By placing an order, you agree to the PDC2T's</div>
+          <div>
+            <a href="#"> Terms & Conditions </a>
+            <div style="margin-left: 0.5rem; margin-right: 0.5rem">and</div>
+            <a href="#"> Privacy Policy </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<script src="{% static "js/checkout.js" %}"></script>
+{% endblock main-content %}
